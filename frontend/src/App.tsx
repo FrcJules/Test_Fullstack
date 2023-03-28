@@ -1,97 +1,79 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const AddCarForm = () => {
-  const [nomLoueur, setNomLoueur] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
-  const [marque, setMarque] = useState<string>('');
-  const [modele, setModele] = useState<string>('');
-  const [annee, setAnnee] = useState<number>(0);
-  const [ville, setVille] = useState<string>('');
-  const [prix, setPrix] = useState<number>(0);
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+export default function Login() {
+  const [username, setUser] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  const handleUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUser(event.target.value);
+  };
+
+  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(event.target.value);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append('nomLoueur', nomLoueur);
-      formData.append('email', email);
-      formData.append('marque', marque);
-      formData.append('modele', modele);
-      formData.append('annee', annee.toString());
-      formData.append('ville', ville);
-      formData.append('prix', prix.toString());
-      if (photo !== null) {
-        formData.append('photo', photo);
-      }
-      await axios.post('/api/cars', formData);
-      window.location.href = '/cars';
+      const response = await axios.post('http://192.168.1.39:4000/auth/login', {
+        username,
+        password,
+      });
+      console.log(response.data);
+      console.log('Login successful');
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files !== null) {
-      setPhoto(event.target.files[0]);
-    }
-  };
-
-  const validateEmail = (email: string) => {
-    const re = /\S+@\S+.\S+/;
-    return re.test(email);
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const email = event.target.value;
-    if (validateEmail(email)) {
-      setEmail(email);
-      setErrorMessage('');
-    } else {
-      setErrorMessage('Email invalide');
+      console.error(error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Nom loueur:</label>
-        <input type="text" value={nomLoueur} onChange={(e) => setNomLoueur(e.target.value)} required />
-      </div>
-      <div>
-        <label>Email:</label>
-        <input type="email" value={email} onChange={handleEmailChange} required />
-        {errorMessage && <div>{errorMessage}</div>}
-      </div>
-      <div>
-        <label>Marque:</label>
-        <input type="text" value={marque} onChange={(e) => setMarque(e.target.value)} required />
-      </div>
-      <div>
-        <label>Modèle:</label>
-        <input type="text" value={modele} onChange={(e) => setModele(e.target.value)} required />
-      </div>
-      <div>
-        <label>Année:</label>
-        <input type="number" value={annee} onChange={(e) => setAnnee(parseInt(e.target.value))} required />
-      </div>
-      <div>
-        <label>Ville:</label>
-        <input type="text" value={ville} onChange={(e) => setVille(e.target.value)} required />
-      </div>
-      <div>
-        <label>Prix par jour:</label>
-        <input type="number" value={prix} onChange={(e) => setPrix(parseInt(e.target.value))} required />
-      </div>
-      <div>
-        <label>Photo:</label>
-        <input type="file" onChange={handleFileChange} required />
-</div>
-<button type="submit">Enregistrer</button>
-</form>
-);
-};
+    <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
+      <div className="w-full p-6 m-auto bg-white rounded-md shadow-md lg:max-w-xl">
+        <h1 className="text-3xl font-semibold text-center text-blue-700 underline">
+          Sign in
+        </h1>
+        <form className="mt-6" onSubmit={handleSubmit}>
+          <div className="mb-2">
+            <label>
+              User
+            </label>
+            <input
+              type="username"
+              className="block w-full px-4 py-2 mt-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={username}
+              onChange={handleUserChange}
+            />
+          </div>
+          <div className="mb-2">
+            <label>
+              Password
+            </label>
+            <input
+              type="password"
+              className="block w-full px-4 py-2 mt-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              value={password}
+              onChange={handlePasswordChange}
+            />
+          </div>
+          <div className="mt-6">
+            <button className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-700 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+              Login
+            </button>
+          </div>
+        </form>
 
-export default AddCarForm;
+        <p className="mt-8 text-xs font-light text-center text-gray-700">
+          {" "}
+          Don't have an account?{" "}
+          <a
+            href="#"
+            className="font-medium text-blue-600 hover:underline"
+          >
+            Sign up
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
