@@ -11,6 +11,8 @@ services:
       - ./frontend:/usr/src/app
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
     networks:
       - back
     restart: always
