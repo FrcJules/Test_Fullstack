@@ -45,6 +45,7 @@ services:
       - MYSQL_DATABASE=mydatabase
     volumes:
       - mysql:/var/lib/mysql
+      - ./dump/mysql_scripts.sql:/docker-entrypoint-initdb.d/mysql_scripts.sql
     networks:
       - back
     restart: always
