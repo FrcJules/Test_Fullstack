@@ -1,9 +1,10 @@
-
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
+import { ProfileController } from './profile/profile.controller';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [AuthModule,
@@ -18,8 +19,11 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-  })],
-  controllers: [AppController],
+  }),
+  ProfileModule
+  ],
+  controllers: [AppController, ProfileController],
   providers: [AppService],
 })
+
 export class AppModule {}

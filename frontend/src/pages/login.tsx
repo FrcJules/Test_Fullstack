@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-
 export default function Login() {
   const [username, setUser] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const navigate = useNavigate();
-
 
   const handleUserChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUser(event.target.value);
@@ -28,13 +27,14 @@ export default function Login() {
       console.log('Login successful');
       if (username === 'user1') {
         navigate('/form');
-      } if (username === 'user2') {
+      } else if (username === 'user2') {
         navigate('/cars');
-      } if (username === 'user3') {
+      } else if (username === 'user3') {
         navigate('/admin');
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage('Mot de passe ou nom d\'utilisateur incorrect');
     }
   };
 
@@ -46,9 +46,7 @@ export default function Login() {
         </h1>
         <form className="mt-6" onSubmit={handleSubmit}>
           <div className="mb-2">
-            <label>
-              User
-            </label>
+            <label>User</label>
             <input
               type="username"
               className="block w-full px-4 py-2 mt-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -57,9 +55,7 @@ export default function Login() {
             />
           </div>
           <div className="mb-2">
-            <label>
-              Password
-            </label>
+            <label>Password</label>
             <input
               type="password"
               className="block w-full px-4 py-2 mt-2 text-blue-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -72,15 +68,14 @@ export default function Login() {
               Login
             </button>
           </div>
+          {errorMessage && (
+            <p className="mt-4 text-sm text-red-600">{errorMessage}</p>
+          )}
         </form>
 
         <p className="mt-8 text-xs font-light text-center text-gray-700">
-          {" "}
           Don't have an account?{" "}
-          <a
-            href="#"
-            className="font-medium text-blue-600 hover:underline"
-          >
+          <a href="#" className="font-medium text-blue-600 hover:underline">
             Sign up
           </a>
         </p>

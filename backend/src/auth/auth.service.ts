@@ -4,6 +4,9 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
+  verifyToken(token: string) {
+      throw new Error('Method not implemented.');
+  }
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService
