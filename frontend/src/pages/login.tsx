@@ -20,14 +20,18 @@ export default function Login() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:4000/login', {
+      const response = await axios.post('http://localhost:4000/auth/login', {
         username,
         password,
       });
       console.log(response.data);
       console.log('Login successful');
-      if (username == 'john') {
+      if (username === 'user1') {
         navigate('/form');
+      } if (username === 'user2') {
+        navigate('/cars');
+      } if (username === 'user3') {
+        navigate('/admin');
       }
     } catch (error) {
       console.error(error);
