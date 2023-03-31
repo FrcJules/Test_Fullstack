@@ -44,8 +44,7 @@ const AddCarForm = () => {
       if (photo !== null) {
         formData.append('photo', photo);
       }
-      await axios.post('/api/cars', formData);
-      window.location.href = '/cars';
+      await axios.post('http://localhost:4000/cars/create', formData);
     } catch (error) {
       console.log(error);
     }
@@ -58,16 +57,10 @@ const AddCarForm = () => {
   };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const email = event.target.value;
-    const isValid = validator.validate(email);
-    if (isValid) {
-      setEmail(email);
-      setErrorEmail('');
-    } else {
-      setErrorEmail('L\'Email invalide');
-    }
+    const newEmail = event.target.value;
+    setEmail(newEmail);
   };
-  
+
   const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const annee = Number(event.target.value);
     if (annee >= 1900 && annee <= 2023) {

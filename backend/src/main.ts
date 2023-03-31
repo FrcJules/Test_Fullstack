@@ -16,9 +16,15 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
   await app.listen(4000);
-
   const db = await db_connect();
   console.log('Connected to database:', db.config.database);
+  let isDbInitialized = false;
+  if (!isDbInitialized) {
+    await db.execute('INSERT INTO user (username, password) VALUES ("user1", "password1"), ("user2", "password2"), ("user3", "password3");');
+    isDbInitialized = true;
+    console.log('Initialized database');
+  }
+  
 }
 
 bootstrap();
