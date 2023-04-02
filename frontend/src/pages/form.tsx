@@ -7,21 +7,28 @@ interface City {
 }
 
 const AddCarForm = () => {
-  const [nomLoueur, setNomLoueur] = useState<string>("");
-  const [email, setEmail] = useState('');
+  const [nomLoueur, setnomLoueur] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [marque, setMarque] = useState<string>("");
   const [modele, setModele] = useState<string>("");
   const [annee, setAnnee] = useState<number>(2000);
   const [cityId, setCityId] = useState<string>("");
   const [prix, setPrix] = useState<number>(0);
-  const [photo, setPhoto] = useState<File | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
   const [cities, setCities] = useState<City[]>([]);
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorYear, setErrorYear] = useState('');
-  const [errorPrice, setErrorPrice] = useState('');
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorYear, setErrorYear] = useState("");
+  const [errorPrice, setErrorPrice] = useState("");
+  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [, setToken] = useState('');
 
   useEffect(() => {
     const fetchCities = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        window.location.href = '/';
+        return;
+      }
       const response = await axios.get<City[]>(
         "https://geo.api.gouv.fr/departements/987/communes?fields=nom&format=json"
       );
@@ -30,21 +37,45 @@ const AddCarForm = () => {
     fetchCities();
   }, []);
 
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newEmail = event.target.value;
+    setEmail(newEmail);
+    if (validator.validate(newEmail)) {
+      setErrorEmail("");
+    } else {
+      setFormSubmitted(false);
+      setErrorEmail("L'email n'est pas valide");
+    }
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    if (validator.validate(email)) {
+      setErrorEmail("");
+    } else {
+      setFormSubmitted(false);
+      setErrorEmail("L'email n'est pas valide");
+    }
     event.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append('nomLoueur', nomLoueur);
-      formData.append('email', email);
-      formData.append('marque', marque);
-      formData.append('modele', modele);
-      formData.append('annee', annee.toString());
-      formData.append('cityId', cityId.toString());
-      formData.append('prix', prix.toString());
-      if (photo !== null) {
-        formData.append('photo', photo);
+      const formData: any = {
+        nomLoueur: nomLoueur,
+        email: email,
+        marque: marque,
+        modele: modele,
+        annee: annee.toString(),
+        cityId: cityId.toString(),
+        prix: prix.toString(),
+        photo: photo,
+      };
+      const storedToken = JSON.parse(localStorage.getItem('token') || '{}');
+      if (!storedToken) {
+        window.location.href = '/';
+        return;
       }
-      await axios.post('http://localhost:4000/cars/create', formData);
+      setToken(storedToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+      await axios.post("http://localhost:4000/cars/create", formData);
+      setFormSubmitted(true);
     } catch (error) {
       console.log(error);
     }
@@ -52,36 +83,39 @@ const AddCarForm = () => {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files !== null) {
-      setPhoto(event.target.files[0]);
+      setPhoto(event.target.files[0].name);
     }
-  };
-
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newEmail = event.target.value;
-    setEmail(newEmail);
   };
 
   const handleYearChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const annee = Number(event.target.value);
     if (annee >= 1900 && annee <= 2023) {
       setAnnee(annee);
-      setErrorYear('');
+      setErrorYear("");
     } else {
-      setErrorYear('L\'année doit être comprise entre 1900 et 2023');
+      setErrorYear("L'année doit être comprise entre 1900 et 2023");
     }
   };
   const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const price = Number(event.target.value);
     if (price > 0) {
       setPrix(price);
-      setErrorPrice('');
+      setErrorPrice("");
     } else {
-      setErrorPrice('Le prix ne peut pas être inférieur à 0');
+      setErrorPrice("Le prix ne peut pas être inférieur à 0");
     }
+  };
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setCityId(event.target.value);
   };
 
   return (
     <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8">
+      {formSubmitted && (
+        <div className="text-blue-500 mb-4">
+          Le formulaire à bien été envoyé.
+        </div>
+      )}
       <div className="mb-4">
         <label
           className="block text-gray-700 font-bold mb-2"
@@ -93,7 +127,7 @@ const AddCarForm = () => {
           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           type="text"
           value={nomLoueur}
-          onChange={(e) => setNomLoueur(e.target.value)}
+          onChange={(e) => setnomLoueur(e.target.value)}
           id="nomLoueur"
           required
         />
@@ -160,10 +194,7 @@ const AddCarForm = () => {
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2" htmlFor="ville">
           Ville :
-          <select
-            value={cityId}
-            onChange={(event) => setCityId(event.target.value)}
-          >
+          <select value={cityId} onChange={handleCityChange}>
             {cities.map((city) => (
               <option key={city.nom} value={city.nom}>
                 {city.nom}
@@ -192,9 +223,7 @@ const AddCarForm = () => {
             required
           />
         </div>
-          {errorPrice && (
-            <div className="text-red-500 text-sm">{errorPrice}</div>
-          )}
+        {errorPrice && <div className="text-red-500 text-sm">{errorPrice}</div>}
       </div>
       <div className="mb-4">
         <label

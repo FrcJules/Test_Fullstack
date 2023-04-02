@@ -7,6 +7,7 @@ import { CarsService } from './cars.service';
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
+  @UseGuards(AuthGuard)
   @Post('create')
   async createCar(@Body() car: Car): Promise<Car> {
     return this.carsService.create(car);

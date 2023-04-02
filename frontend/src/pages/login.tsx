@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import JWT from 'jwt-decode';
 
 export default function Login() {
   const [username, setUser] = useState<string>('');
@@ -23,12 +24,14 @@ export default function Login() {
         username,
         password,
       });
+      localStorage.setItem("token", JSON.stringify(response.data.access_token));
+      setUser(JWT(response.data.access_token));
       console.log(response.data);
       console.log('Login successful');
       if (username === 'user1') {
         navigate('/form');
       } else if (username === 'user2') {
-        navigate('/cars');
+        navigate('/annonces');
       } else if (username === 'user3') {
         navigate('/admin');
       }
@@ -72,13 +75,6 @@ export default function Login() {
             <p className="mt-4 text-sm text-red-600">{errorMessage}</p>
           )}
         </form>
-
-        <p className="mt-8 text-xs font-light text-center text-gray-700">
-          Don't have an account?{" "}
-          <a href="#" className="font-medium text-blue-600 hover:underline">
-            Sign up
-          </a>
-        </p>
       </div>
     </div>
   );
