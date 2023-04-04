@@ -26,4 +26,3 @@
     "excludeDirectories": ["**/node_modules", "dist"]
   }
 }
-

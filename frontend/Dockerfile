@@ -9,4 +9,4 @@ RUN npm i -g react-scripts
 RUN npm install -g typescript ts-node
 RUN npm install --save-dev typescript
 
-CMD [ "npm", "run", "start" ]
+CMD [ "sh", "-c", "npm install && npm run start" ]
