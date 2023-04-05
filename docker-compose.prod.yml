@@ -1,0 +1,63 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: okvoiture-front-prod
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    networks:
+      - back
+    restart: always
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: okvoiture-back-prod
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=example
+      - DB_DATABASE=mydatabase
+    networks:
+      - back
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: okvoiture-db-prod
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=example
+      - MYSQL_DATABASE=mydatabase
+    volumes:
+      - mysql-prod:/var/lib/mysql
+      - ./dump/mysql_scripts.sql:/docker-entrypoint-initdb.d/mysql_scripts.sql
+    networks:
+      - back
+    restart: always
+
+networks:
+  back:
+    driver: bridge
+
+volumes:
+  mysql-prod:

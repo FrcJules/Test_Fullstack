@@ -15,7 +15,7 @@ CREATE TABLE car (
 );
 
 CREATE TABLE user (
-  id INT(11) NOT NULL,
+  id INT(11) NOT NULL AUTO_INCREMENT,
   username VARCHAR(50) NOT NULL,
   password VARCHAR(250) NOT NULL,
   PRIMARY KEY (id)
