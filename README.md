@@ -1,4 +1,10 @@
-
+## Docker build
+```
+  docker compose -f docker-compose.prod.yml build
+```
+```
+  docker compose -f docker-compose.prod.yml up
+```
 ## API Reference
 
 #### Get auth token
