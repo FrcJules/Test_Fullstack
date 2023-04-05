@@ -3,7 +3,7 @@
 
 #### Get auth token
 
-```http
+```
   POST /auth/login
 ```
 
@@ -14,7 +14,7 @@
 
 #### Create a new ad
 
-```http
+```
   GET /cars/create (Bearer Protected)
 ```
 
@@ -24,13 +24,13 @@
 | `email`      | `string` | **Required**. Email |
 | `marque`      | `string` | **Required**. Car Brand |
 | `modele`      | `string` | **Required**. Car Model |
-| `annee`      | `int` | **Required**. Vehicle Year |
+| `annee`      | `string` | **Required**. Vehicle Year |
 | `cityId`      | `string` | **Required**. CityName |
 | `prix`      | `int` | **Required**. Rental price |
 | `photo`      | `string` | **Required**. Path od the picture |
 
 #### Get all ads
 
-```http
+```
   GET /cars/all (Bearer Protected)
 ```
