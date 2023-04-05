@@ -24,7 +24,7 @@
 | `email`      | `string` | **Required**. Email |
 | `marque`      | `string` | **Required**. Car Brand |
 | `modele`      | `string` | **Required**. Car Model |
-| `annee`      | `string` | **Required**. Vehicle Year |
+| `annee`      | `int` | **Required**. Vehicle Year |
 | `cityId`      | `string` | **Required**. CityName |
 | `prix`      | `int` | **Required**. Rental price |
 | `photo`      | `string` | **Required**. Path od the picture |
